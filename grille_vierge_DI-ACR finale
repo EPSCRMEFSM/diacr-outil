@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Grille Vierge — Acrosport DI-ACR — ADP 2026</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=IBM+Plex+Mono:wght@500;600;700&display=swap');
+
+*{box-sizing:border-box;margin:0;padding:0;}
+
+:root{
+  --bleu:#1a4f8a;
+  --bleu-fonce:#0f3060;
+  --bleu-pale:#e8f0fb;
+  --bleu-mid:#2a6cb0;
+  --gris:#5a5f70;
+  --gris-pale:#f4f5f8;
+  --gris-bord:#d0d4de;
+  --gris-fonce:#2a2d36;
+  --noir:#0f1117;
+  --blanc:#fff;
+  --rouge:#8b1a1a;
+  --rouge-pale:#fdeaea;
+  --amber:#7a4d00;
+  --amber-pale:#fdf3e3;
+  --vert:#1a6b3a;
+  --vert-pale:#e6f4ec;
+}
+
+body{
+  font-family:'IBM Plex Sans',sans-serif;
+  background:#dde1ea;
+  font-size:10pt;
+  color:var(--noir);
+}
+
+/* ── Barre impression ── */
+.print-bar{
+  background:var(--bleu-fonce);
+  color:#fff;
+  padding:10px 20px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  font-size:12px;
+  font-weight:500;
+  gap:12px;
+}
+.print-bar span{opacity:.7;font-size:11px;}
+.btn-print{
+  background:#fff;color:var(--bleu);border:none;
+  padding:7px 18px;border-radius:4px;
+  font-family:inherit;font-weight:700;font-size:12px;
+  cursor:pointer;letter-spacing:.4px;
+}
+.btn-print:hover{background:var(--bleu-pale);}
+
+/* ── Page A4 ── */
+.page{
+  width:210mm;
+  background:var(--blanc);
+  margin:18px auto;
+  padding:9mm 10mm 9mm 10mm;
+  box-shadow:0 4px 28px rgba(0,0,0,.18);
+}
+
+/* ── En-tête ── */
+.page-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  margin-bottom:7px;
+  border-bottom:2.5px solid var(--bleu);
+  padding-bottom:6px;
+}
+.header-left{}
+.header-title{
+  font-size:13.5pt;font-weight:800;
+  color:var(--bleu);letter-spacing:-.4px;line-height:1.15;
+}
+.header-sub{
+  font-size:7pt;
+  font-family:'IBM Plex Mono',monospace;
+  color:var(--gris);margin-top:3px;
+  letter-spacing:.3px;line-height:1.7;
+}
+.header-right{
+  text-align:right;font-size:7.5pt;
+  color:var(--gris);font-family:'IBM Plex Mono',monospace;
+  line-height:1.8;
+}
+.header-right strong{color:var(--bleu-fonce);font-weight:700;}
+
+/* ── Méta établissement ── */
+.meta{
+  display:grid;
+  grid-template-columns:2fr 1fr 1fr;
+  gap:5px 12px;
+  margin-bottom:7px;
+  background:var(--gris-pale);
+  border:1px solid var(--gris-bord);
+  border-radius:4px;
+  padding:5px 10px;
+  font-size:8pt;
+}
+.meta-row{display:flex;align-items:baseline;gap:6px;}
+.meta-label{
+  font-weight:700;font-size:6.5pt;
+  text-transform:uppercase;letter-spacing:.6px;
+  color:var(--gris);white-space:nowrap;
+}
+.meta-line{
+  flex:1;border-bottom:1px solid var(--gris-bord);
+  min-width:50px;height:13px;
+}
+.meta-fixed{font-size:8pt;color:var(--gris-fonce);font-style:italic;}
+
+/* ── Légende codes ── */
+.legende{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:5px;margin-bottom:6px;
+}
+.leg-obs{border:1px solid var(--gris-bord);border-radius:4px;overflow:hidden;}
+.leg-title{
+  background:var(--bleu);color:#fff;
+  padding:3px 7px;font-weight:700;font-size:7pt;letter-spacing:.3px;
+}
+.leg-codes{display:grid;grid-template-columns:repeat(3,1fr);}
+.leg-code{padding:3px 4px;text-align:center;line-height:1.25;}
+.leg-code .c{
+  font-family:'IBM Plex Mono',monospace;font-weight:700;font-size:9pt;display:block;
+}
+.leg-code .l{font-size:6pt;color:var(--gris);display:block;}
+.da{background:var(--rouge-pale);}.da .c{color:var(--rouge);}
+.db{background:var(--amber-pale);}.db .c{color:var(--amber);}
+.dc{background:var(--vert-pale);}.dc .c{color:var(--vert);}
+
+/* ── Seuils ── */
+.seuils{
+  display:flex;align-items:center;gap:8px;
+  margin-bottom:7px;font-size:7.5pt;flex-wrap:wrap;
+}
+.seuil-label{
+  font-weight:700;font-size:6.5pt;text-transform:uppercase;
+  letter-spacing:.5px;color:var(--gris);
+}
+.si{
+  display:inline-flex;align-items:center;gap:3px;
+  padding:2px 9px;border-radius:3px;
+  font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:7.5pt;
+}
+.si-a{background:var(--rouge-pale);color:var(--rouge);border:1px solid #e0b0b0;}
+.si-b{background:var(--amber-pale);color:var(--amber);border:1px solid #e0c890;}
+.si-c{background:var(--vert-pale);color:var(--vert);border:1px solid #a8d4b8;}
+.seuil-note{font-size:6.5pt;color:var(--gris);margin-left:6px;}
+
+/* ── Tableau ── */
+table{width:100%;border-collapse:collapse;font-size:8pt;margin-bottom:7px;}
+
+/* Header principal */
+.th-main{
+  background:var(--bleu-fonce);color:#fff;
+  padding:4px 5px;text-align:center;
+  font-weight:700;font-size:7pt;letter-spacing:.3px;
+  border:1px solid var(--bleu-mid);vertical-align:middle;line-height:1.3;
+}
+.th-main.tl{text-align:left;}
+
+/* Sous-header degrés */
+.th-deg{
+  padding:2px 3px;text-align:center;
+  font-family:'IBM Plex Mono',monospace;font-weight:700;font-size:7pt;
+  border:1px solid rgba(255,255,255,.15);
+  vertical-align:middle;
+}
+.th-deg-a{background:#922020;color:#fff;}
+.th-deg-b{background:#8a6010;color:#fff;}
+.th-deg-c{background:#1a6030;color:#fff;}
+
+/* Séparateur OBS */
+.th-obs-sep{
+  background:var(--bleu-fonce);
+  width:3px;padding:0;border:none;
+}
+
+/* Lignes données */
+tbody tr{border-bottom:1px solid var(--gris-bord);}
+tbody tr:nth-child(even){background:var(--gris-pale);}
+tbody tr.gf{border-top:2px solid var(--bleu);}
+
+td{padding:3.5px 5px;vertical-align:middle;border-right:1px solid var(--gris-bord);}
+
+.td-gr{
+  text-align:center;font-family:'IBM Plex Mono',monospace;font-weight:700;
+  font-size:8pt;color:var(--bleu);background:var(--bleu-pale) !important;
+  width:20px;border-right:2px solid var(--bleu);
+}
+.td-n{
+  text-align:center;font-family:'IBM Plex Mono',monospace;
+  font-size:7.5pt;color:var(--gris);width:18px;font-weight:600;
+}
+.td-nom{font-weight:500;min-width:88px;}
+
+/* Cellules OBS vierges — zone à entourer */
+.td-obs{
+  text-align:center;width:30px;
+  border-right:none;
+  /* Zone d'écriture visible */
+}
+.td-obs-sep{width:3px;background:var(--bleu) !important;padding:0;border:none;}
+
+/* Cellule prénom vierge */
+.td-nom-blank{
+  min-width:88px;
+  border-bottom:1px dashed var(--gris-bord);
+}
+
+/* Cercles pour entourer A/B/C */
+.choice{
+  display:inline-block;
+  font-family:'IBM Plex Mono',monospace;font-weight:700;font-size:8.5pt;
+  width:18px;height:18px;line-height:18px;
+  text-align:center;border-radius:50%;
+  border:1.2px solid transparent;
+  cursor:default;
+}
+.ca{color:var(--rouge);border-color:var(--rouge-pale);}
+.cb{color:var(--amber);border-color:var(--amber-pale);}
+.cc{color:var(--vert);border-color:var(--vert-pale);}
+
+.td-profil{
+  text-align:center;
+  font-family:'IBM Plex Mono',monospace;font-weight:700;font-size:10pt;
+  width:26px;border-left:2px solid var(--gris-bord);
+  color:var(--gris-bord);
+}
+.td-lacune{font-size:7pt;color:var(--gris-bord);width:78px;}
+.td-notes{width:52px;}
+
+/* Ligne bilan */
+tr.bilan-row td{
+  background:var(--bleu-fonce) !important;
+  color:#fff;font-weight:700;font-size:7.5pt;
+  padding:4px 5px;
+  font-family:'IBM Plex Mono',monospace;
+  border-color:var(--bleu-mid);
+}
+tr.bilan-row .bilan-label{
+  text-align:left;font-weight:700;
+  letter-spacing:.3px;color:rgba(255,255,255,.8);
+}
+
+/* ── Zone finale ── */
+.zone-finale{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:7px;margin-bottom:7px;
+}
+.zone-box{
+  border:1px solid var(--gris-bord);border-radius:4px;padding:5px 8px;
+}
+.zone-box-title{
+  font-weight:700;font-size:6.5pt;text-transform:uppercase;
+  letter-spacing:.5px;color:var(--gris);margin-bottom:4px;
+}
+.zone-line{
+  height:15px;border-bottom:1px solid var(--gris-bord);margin-bottom:4px;
+}
+
+/* ── Pied de page ── */
+.footer{
+  border-top:1px solid var(--gris-bord);
+  padding-top:5px;
+  display:flex;justify-content:space-between;
+  font-size:6.5pt;color:var(--gris);
+  font-family:'IBM Plex Mono',monospace;
+}
+
+/* ══ PRINT ══ */
+@media print{
+  body{background:#fff;}
+  .print-bar{display:none !important;}
+  .page{margin:0;padding:7mm 9mm;box-shadow:none;width:100%;}
+  @page{size:A4 portrait;margin:0;}
+  .td-gr,.th-deg-a,.th-deg-b,.th-deg-c,.th-main,
+  tr.bilan-row td,.da,.db,.dc,.si-a,.si-b,.si-c
+  {-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+}
+</style>
+</head>
+<body>
+
+<div class="print-bar">
+  <div>
+    <strong>Grille Vierge — Acrosport DI-ACR · ADP 2026</strong>
+    <span style="margin-left:14px;">QUAL_EQ_05 · CRMEF Souss-Massa · Formateur : BOUARGANE</span>
+  </div>
+  <button class="btn-print" onclick="window.print()">🖨 Imprimer / Enregistrer PDF</button>
+</div>
+
+<div class="page">
+
+  <!-- EN-TÊTE -->
+  <div class="page-header">
+    <div class="header-left">
+      <div class="header-title">GRILLE D'OBSERVATION DIAGNOSTIQUE — ACROSPORT</div>
+      <div class="header-sub">
+        DI-ACR · ADP 2026 · VERSION FINALE P3 · QUAL_EQ_05 · CRMEF SOUSS-MASSA<br>
+        — SECTION EPS
+      </div>
+    </div>
+    <div class="header-right">
+      <strong>Type : DI — Diagnostique Initial</strong><br>
+      Pas de note /20 · Profil de classe<br>
+      uniquement<br>
+      Niveau de contenu : N1 (arrière-plan<br>
+      N2)<br>
+      Écart stade détecté : <strong>OUI ✓</strong>
+    </div>
+  </div>
+
+  <!-- MÉTA -->
+  <div class="meta">
+    <div class="meta-row"><span class="meta-label">Établissement</span><span class="meta-line"></span></div>
+    <div class="meta-row"><span class="meta-label">Classe</span><span class="meta-line"></span></div>
+    <div class="meta-row"><span class="meta-label">Date</span><span class="meta-line"></span></div>
+    <div class="meta-row"><span class="meta-label">Séance</span><span class="meta-fixed">S1 ☐ &nbsp; S2 ☐</span></div>
+    <div class="meta-row"><span class="meta-label">Enseignant</span><span class="meta-line"></span></div>
+    <div class="meta-row"><span class="meta-label">Essai</span><span class="meta-fixed">Essai 1 uniquement</span></div>
+  </div>
+
+  <!-- LÉGENDE -->
+  <div class="legende">
+    <div class="leg-obs">
+      <div class="leg-title">OBS-01 — Enchaînement collectif</div>
+      <div class="leg-codes">
+        <div class="leg-code da"><span class="c">CD</span><span class="l">Composition<br>Dynamique</span></div>
+        <div class="leg-code db"><span class="c">EA</span><span class="l">Ensemble<br>Articulé</span></div>
+        <div class="leg-code dc"><span class="c">JF</span><span class="l">Juxtaposition<br>Figures</span></div>
+      </div>
+    </div>
+    <div class="leg-obs">
+      <div class="leg-title">OBS-02 — Interprétation individuelle</div>
+      <div class="leg-codes">
+        <div class="leg-code da"><span class="c">IE</span><span class="l">Investit<br>Espace</span></div>
+        <div class="leg-code db"><span class="c">CP</span><span class="l">Combine<br>Postures</span></div>
+        <div class="leg-code dc"><span class="c">OP</span><span class="l">Occupe<br>Posture</span></div>
+      </div>
+    </div>
+    <div class="leg-obs">
+      <div class="leg-title">OBS-03 — Niveau de difficulté des figures</div>
+      <div class="leg-codes">
+        <div class="leg-code da"><span class="c">FC</span><span class="l">Figures<br>Complexes</span></div>
+        <div class="leg-code db"><span class="c">FI</span><span class="l">Figures<br>Interm.</span></div>
+        <div class="leg-code dc"><span class="c">FS</span><span class="l">Figures<br>Simples</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SEUILS -->
+  <div class="seuils">
+    <span class="seuil-label">Seuils /10 :</span>
+    <span class="si si-a">A — Avancé &nbsp;≥ 7,5</span>
+    <span style="color:var(--gris-bord)">·</span>
+    <span class="si si-b">B — Interm. &nbsp;[4,5 – 7,5[</span>
+    <span style="color:var(--gris-bord)">·</span>
+    <span class="si si-c">C — Débutant &nbsp;&lt; 4,5</span>
+    <span class="seuil-note">Mapping : A = 9 pts · B = 6 pts · C = 3 pts · Moy = (OBS01+OBS02+OBS03)/3</span>
+  </div>
+
+  <!-- TABLEAU -->
+  <table>
+    <thead>
+      <!-- Ligne 1 : titres colonnes -->
+      <tr>
+        <th class="th-main tl" rowspan="3" style="width:20px">Gr.</th>
+        <th class="th-main" rowspan="3" style="width:18px">N°</th>
+        <th class="th-main tl" rowspan="3" style="min-width:88px">NOM / PRÉNOM</th>
+        <!-- OBS-01 -->
+        <th class="th-main" colspan="3" style="border-left:3px solid rgba(255,255,255,.3)">
+          OBS-01<br><span style="font-weight:400;font-size:6pt">Enchaînement collectif</span>
+        </th>
+        <th class="th-obs-sep" rowspan="3"></th>
+        <!-- OBS-02 -->
+        <th class="th-main" colspan="3">
+          OBS-02<br><span style="font-weight:400;font-size:6pt">Interprétation individuelle</span>
+        </th>
+        <th class="th-obs-sep" rowspan="3"></th>
+        <!-- OBS-03 -->
+        <th class="th-main" colspan="3">
+          OBS-03<br><span style="font-weight:400;font-size:6pt">Niveau de difficulté</span>
+        </th>
+        <!-- Fin colonnes -->
+        <th class="th-main" rowspan="3" style="width:26px;border-left:2px solid rgba(255,255,255,.3)">Prof.<br>Dom.</th>
+        <th class="th-main" rowspan="3" style="width:78px">Lacune<br>prioritaire</th>
+        <th class="th-main" rowspan="3" style="width:52px">Notes<br>terrain</th>
+      </tr>
+      <!-- Ligne 2 : sous-labels A/B/C -->
+      <tr>
+        <th class="th-deg th-deg-a">A·CD</th>
+        <th class="th-deg th-deg-b">B·EA</th>
+        <th class="th-deg th-deg-c">C·JF</th>
+        <th class="th-deg th-deg-a" style="border-left:none">A·IE</th>
+        <th class="th-deg th-deg-b">B·CP</th>
+        <th class="th-deg th-deg-c">C·OP</th>
+        <th class="th-deg th-deg-a" style="border-left:none">A·FC</th>
+        <th class="th-deg th-deg-b">B·FI</th>
+        <th class="th-deg th-deg-c">C·FS</th>
+      </tr>
+    </thead>
+    <tbody>
+
+<!-- ─── G1 ─── -->
+<tr class="gf">
+  <td class="td-gr" rowspan="6">G1</td>
+  <td class="td-n">1</td><td class="td-nom-blank"></td>
+  <td class="td-obs"><span class="choice ca">A</span></td><td class="td-obs"><span class="choice cb">B</span></td><td class="td-obs"><span class="choice cc">C</span></td>
+  <td class="td-obs-sep"></td>
+  <td class="td-obs"><span class="choice ca">A</span></td><td class="td-obs"><span class="choice cb">B</span></td><td class="td-obs"><span class="choice cc">C</span></td>
+  <td class="td-obs-sep"></td>
+  <td class="td-obs"><span class="choice ca">A</span></td><td class="td-obs"><span class="choice cb">B</span></td><td class="td-obs"><span class="choice cc">C</span></td>
+  <td class="td-profil">·</td><td class="td-lacune"></td><td class="td-notes"></td>
+</tr>
+<tr>
+  <td class="td-n">2</td><td class="td-nom-blank"></td>
+  <td class="td-obs"><span class="choice ca">A</span></td><td class="td-obs"><span class="choice cb">B</span></td><td class="td-obs"><span class="choice cc">C</span></td>
+  <td class="td-obs-sep"></td>
+  <td class="td-obs"><span class="choice ca">A</span></td><td class="td-obs"><span class="choice cb">B</span></td><td class="td-obs"><span class="choice cc">C</span></td>
+  <td class="td-obs-sep"></td>
+  <td class="td-obs"><span class="choice ca">A</span></td><td class="td-obs"><span class="choice cb">B</span></td><td class="td-obs"><span class="choice cc">C</span></td>
+  <td class="td-profil">·</td><td class="td-lacune"></td><td class="td-notes"></td>
+</tr>
+<tr>
+  <td class="td-n">3</td><td class="td-nom-blank"></td>
+  <td class="td-obs"><span class="choice ca">A</span></td><td class="td-obs"><span class="choice cb">B</span></td><td class="td-obs"><span class="choice cc">C</span></td>
+  <td class="td-obs-sep"></td>
+  <td class="td-obs"><span class="choice ca">A</span></td><td class="td-obs"><span class="choice cb">B</span></td><td class="td-obs"><span class="choice cc">C</span></td>
+  <td class="td-obs-sep"></td>
+  <td class="td-obs"><span class="choice ca">A</span></td><td class="td-obs"><span class="choice cb">B</span></td><td class="td-obs"><span class="choice cc">C</span></td>
+  <td class="td-profil">·</td><td class="td-lacune"></td><td class="td-notes"></td>
+</tr>
+<tr>
+  <td class="td-n">4</td><td class="td-nom-blank"></td>
+  <td class="td-obs"><span class="choice ca">A</span></td><td class="td-obs"><span class="choice cb">B</span></td><td class="td-obs"><span class="choice cc">C</span></td>
+  <td class="td-obs-sep"></td>
+  <td class="td-obs"><span class="choice ca">A</span></td><td class="td-obs"><span class="choice cb">B</span></td><td class="td-obs"><span class="choice cc">C</span></td>
+  <td class="td-obs-sep"></td>
+  <td class="td-obs"><span class="choice ca">A</span></td><td class="td-obs"><span class="choice cb">B</span></td><td class="td-obs"><span class="choice cc">C</span></td>
+  <td class="td-profil">·</td><td class="td-lacune"></td><td class="td-notes"></td>
+</tr>
+<tr>
+  <td class="td-n">5</td><td class="td-nom-blank"></td>
+  <td class="td-obs"><span class="choice ca">A</span></td><td class="td-obs"><span class="choice cb">B</span></td><td class="td-obs"><span class="choice cc">C</span></td>
+  <td class="td-obs-sep"></td>
+  <td class="td-obs"><span class="choice ca">A</span></td><td class="td-obs"><span class="choice cb">B</span></td><td class="td-obs"><span class="choice cc">C</span></td>
+  <td class="td-obs-sep"></td>
+  <td class="td-obs"><span class="choice ca">A</span></td><td class="td-obs"><span class="choice cb">B</span></td><td class="td-obs"><span class="choice cc">C</span></td>
+  <td class="td-profil">·</td><td class="td-lacune"></td><td class="td-notes"></td>
+</tr>
+<tr>
+  <td class="td-n">6</td><td class="td-nom-blank"></td>
+  <td class="td-obs"><span class="choice ca">A</span></td><td class="td-obs"><span class="choice cb">B</span></td><td class="td-obs"><span class="choice cc">C</span></td>
+  <td class="td-obs-sep"></td>
+  <td class="td-obs"><span class="choice ca">A</span></td><td class="td-obs"><span class="choice cb">B</span></td><td class="td-obs"><span class="choice cc">C</span></td>
+  <td class="td-obs-sep"></td>
+  <td class="td-obs"><span class="choice ca">A</span></td><td class="td-obs"><span class="choice cb">B</span></td><td class="td-obs"><span class="choice cc">C</span></td>
+  <td class="td-profil">·</td><td class="td-lacune"></td><td class="td-notes"></td>
+</tr>
+
+<!-- ─── G2 ─── -->
+<tr class="gf">
+  <td class="td-gr" rowspan="6">G2</td>
+  <td class="td-n">7</td><td class="td-nom-blank"></td>
+  <td class="td-obs"><span class="choice ca">A</span></td><td class="td-obs"><span class="choice cb">B</span></td><td class="td-obs"><span class="choice cc">C</span></td>
+  <td class="td-obs-sep"></td>
+  <td class="td-obs"><span class="choice ca">A</span></td><td class="td-obs"><span class="choice cb">B</span></td><td class="td-obs"><span class="choice cc">C</span></td>
+  <td class="td-obs-sep"></td>
+  <td class="td-obs"><span class="choice ca">A</span></td><td class="td-obs"><span class="choice cb">B</span></td><td class="td-obs"><span class="choice cc">C</span></td>
+  <td class="td-profil">·</td><td class="td-lacune"></td><td class="td-notes"></td>
+</tr>
+<tr>
+  <td class="td-n">8</td><td class="td-nom-blank"></td>
+  <td class="td-obs"><span class="choice ca">A</span></td><td class="td-obs"><span class="choice cb">B</span></td><td class="td-obs"><span class="choice cc">C</span></td>
+  <td class="td-obs-sep"></td>
+  <td class="td-obs"><span class="choice ca">A</span></td><td class="td-obs"><span class="choice cb">B</span></td><td class="td-obs"><span class="choice cc">C</span></td>
+  <td class="td-obs-sep"></td>
+  <td class="td-obs"><span class="choice ca">A</span></td><td class="td-obs"><span class="choice cb">B</span></td><td class="td-obs"><span class="choice cc">C</span></td>
+  <td class="td-profil">·</td><td class="td-lacune"></td><td class="td-notes"></td>
+</tr>
+<tr>
+  <td class="td-n">9</td><td class="td-nom-blank"></td>
+  <td class="td-obs"><span class="choice ca">A</span></td><td class="td-obs"><span class="choice cb">B</span></td><td class="td-obs"><span class="choice cc">C</span></td>
+  <td class="td-obs-sep"></td>
+  <td class="td-obs"><span class="choice ca">A</span></td><td class="td-obs"><span class="choice cb">B</span></td><td class="td-obs"><span class="choice cc">C</span></td>
+  <td class="td-obs-sep"></td>
+  <td class="td-obs"><span class="choice ca">A</span></td><td class="td-obs"><span class="choice cb">B</span></td><td class="td-obs"><span class="choice cc">C</span></td>
+  <td class="td-profil">·</td><td class="td-lacune"></td><td class="td-notes"></td>
+</tr>
+<tr>
+  <td class="td-n">10</td><td class="td-nom-blank"></td>
+  <td class="td-obs"><span class="choice ca">A</span></td><td class="td-obs"><span class="choice cb">B</span></td><td class="td-obs"><span class="choice cc">C</span></td>
+  <td class="td-obs-sep"></td>
+  <td class="td-obs"><span class="choice ca">A</span></td><td class="td-obs"><span class="choice cb">B</span></td><td class="td-obs"><span class="choice cc">C</span></td>
+  <td class="td-obs-sep"></td>
+  <td class="td-obs"><span class="choice ca">A</span></td><td class="td-obs"><span class="choice cb">B</span></td><td class="td-obs"><span class="choice cc">C</span></td>
+  <td class="td-profil">·</td><td class="td-lacune"></td><td class="td-notes"></td>
+</tr>
+<tr>
+  <td class="td-n">11</td><td class="td-nom-blank"></td>
+  <td class="td-obs"><span class="choice ca">A</span></td><td class="td-obs"><span class="choice cb">B</span></td><td class="td-obs"><span class="choice cc">C</span></td>
+  <td class="td-obs-sep"></td>
+  <td class="td-obs"><span class="choice ca">A</span></td><td class="td-obs"><span class="choice cb">B</span></td><td class="td-obs"><span class="choice cc">C</span></td>
+  <td class="td-obs-sep"></td>
+  <td class="td-obs"><span class="choice ca">A</span></td><td class="td-obs"><span class="choice cb">B</span></td><td class="td-obs"><span class="choice cc">C</span></td>
+  <td class="td-profil">·</td><td class="td-lacune"></td><td class="td-notes"></td>
+</tr>
+<tr>
+  <td class="td-n">12</td><td class="td-nom-blank"></td>
+  <td class="td-obs"><span class="choice ca">A</span></td><td class="td-obs"><span class="choice cb">B</span></td><td class="td-obs"><span class="choice cc">C</span></td>
+  <td class="td-obs-sep"></td>
+  <td class="td-obs"><span class="choice ca">A</span></td><td class="td-obs"><span class="choice cb">B</span></td><td class="td-obs"><span class="choice cc">C</span></td>
+  <td class="td-obs-sep"></td>
+  <td class="td-obs"><span class="choice ca">A</span></td><td class="td-obs"><span class="choice cb">B</span></td><td class="td-obs"><span class="choice cc">C</span></td>
+  <td class="td-profil">·</td><td class="td-lacune"></td><td class="td-notes"></td>
+</tr>
+
+<!-- ─── G3 ─── -->
+<tr class="gf">
+  <td class="td-gr" rowspan="6">G3</td>
+  <td class="td-n">13</td><td class="td-nom-blank"></td>
+  <td class="td-obs"><span class="choice ca">A</span></td><td class="td-obs"><span class="choice cb">B</span></td><td class="td-obs"><span class="choice cc">C</span></td>
+  <td class="td-obs-sep"></td>
+  <td class="td-obs"><span class="choice ca">A</span></td><td class="td-obs"><span class="choice cb">B</span></td><td class="td-obs"><span class="choice cc">C</span></td>
+  <td class="td-obs-sep"></td>
+  <td class="td-obs"><span class="choice ca">A</span></td><td class="td-obs"><span class="choice cb">B</span></td><td class="td-obs"><span class="choice cc">C</span></td>
+  <td class="td-profil">·</td><td class="td-lacune"></td><td class="td-notes"></td>
+</tr>
+<tr>
+  <td class="td-n">14</td><td class="td-nom-blank"></td>
+  <td class="td-obs"><span class="choice ca">A</span></td><td class="td-obs"><span class="choice cb">B</span></td><td class="td-obs"><span class="choice cc">C</span></td>
+  <td class="td-obs-sep"></td>
+  <td class="td-obs"><span class="choice ca">A</span></td><td class="td-obs"><span class="choice cb">B</span></td><td class="td-obs"><span class="choice cc">C</span></td>
+  <td class="td-obs-sep"></td>
+  <td class="td-obs"><span class="choice ca">A</span></td><td class="td-obs"><span class="choice cb">B</span></td><td class="td-obs"><span class="choice cc">C</span></td>
+  <td class="td-profil">·</td><td class="td-lacune"></td><td class="td-notes"></td>
+</tr>
+<tr>
+  <td class="td-n">15</td><td class="td-nom-blank"></td>
+  <td class="td-obs"><span class="choice ca">A</span></td><td class="td-obs"><span class="choice cb">B</span></td><td class="td-obs"><span class="choice cc">C</span></td>
+  <td class="td-obs-sep"></td>
+  <td class="td-obs"><span class="choice ca">A</span></td><td class="td-obs"><span class="choice cb">B</span></td><td class="td-obs"><span class="choice cc">C</span></td>
+  <td class="td-obs-sep"></td>
+  <td class="td-obs"><span class="choice ca">A</span></td><td class="td-obs"><span class="choice cb">B</span></td><td class="td-obs"><span class="choice cc">C</span></td>
+  <td class="td-profil">·</td><td class="td-lacune"></td><td class="td-notes"></td>
+</tr>
+<tr>
+  <td class="td-n">16</td><td class="td-nom-blank"></td>
+  <td class="td-obs"><span class="choice ca">A</span></td><td class="td-obs"><span class="choice cb">B</span></td><td class="td-obs"><span class="choice cc">C</span></td>
+  <td class="td-obs-sep"></td>
+  <td class="td-obs"><span class="choice ca">A</span></td><td class="td-obs"><span class="choice cb">B</span></td><td class="td-obs"><span class="choice cc">C</span></td>
+  <td class="td-obs-sep"></td>
+  <td class="td-obs"><span class="choice ca">A</span></td><td class="td-obs"><span class="choice cb">B</span></td><td class="td-obs"><span class="choice cc">C</span></td>
+  <td class="td-profil">·</td><td class="td-lacune"></td><td class="td-notes"></td>
+</tr>
+<tr>
+  <td class="td-n">17</td><td class="td-nom-blank"></td>
+  <td class="td-obs"><span class="choice ca">A</span></td><td class="td-obs"><span class="choice cb">B</span></td><td class="td-obs"><span class="choice cc">C</span></td>
+  <td class="td-obs-sep"></td>
+  <td class="td-obs"><span class="choice ca">A</span></td><td class="td-obs"><span class="choice cb">B</span></td><td class="td-obs"><span class="choice cc">C</span></td>
+  <td class="td-obs-sep"></td>
+  <td class="td-obs"><span class="choice ca">A</span></td><td class="td-obs"><span class="choice cb">B</span></td><td class="td-obs"><span class="choice cc">C</span></td>
+  <td class="td-profil">·</td><td class="td-lacune"></td><td class="td-notes"></td>
+</tr>
+<tr>
+  <td class="td-n">18</td><td class="td-nom-blank"></td>
+  <td class="td-obs"><span class="choice ca">A</span></td><td class="td-obs"><span class="choice cb">B</span></td><td class="td-obs"><span class="choice cc">C</span></td>
+  <td class="td-obs-sep"></td>
+  <td class="td-obs"><span class="choice ca">A</span></td><td class="td-obs"><span class="choice cb">B</span></td><td class="td-obs"><span class="choice cc">C</span></td>
+  <td class="td-obs-sep"></td>
+  <td class="td-obs"><span class="choice ca">A</span></td><td class="td-obs"><span class="choice cb">B</span></td><td class="td-obs"><span class="choice cc">C</span></td>
+  <td class="td-profil">·</td><td class="td-lacune"></td><td class="td-notes"></td>
+</tr>
+
+<!-- ─── G4 ─── -->
+<tr class="gf">
+  <td class="td-gr" rowspan="6">G4</td>
+  <td class="td-n">19</td><td class="td-nom-blank"></td>
+  <td class="td-obs"><span class="choice ca">A</span></td><td class="td-obs"><span class="choice cb">B</span></td><td class="td-obs"><span class="choice cc">C</span></td>
+  <td class="td-obs-sep"></td>
+  <td class="td-obs"><span class="choice ca">A</span></td><td class="td-obs"><span class="choice cb">B</span></td><td class="td-obs"><span class="choice cc">C</span></td>
+  <td class="td-obs-sep"></td>
+  <td class="td-obs"><span class="choice ca">A</span></td><td class="td-obs"><span class="choice cb">B</span></td><td class="td-obs"><span class="choice cc">C</span></td>
+  <td class="td-profil">·</td><td class="td-lacune"></td><td class="td-notes"></td>
+</tr>
+<tr>
+  <td class="td-n">20</td><td class="td-nom-blank"></td>
+  <td class="td-obs"><span class="choice ca">A</span></td><td class="td-obs"><span class="choice cb">B</span></td><td class="td-obs"><span class="choice cc">C</span></td>
+  <td class="td-obs-sep"></td>
+  <td class="td-obs"><span class="choice ca">A</span></td><td class="td-obs"><span class="choice cb">B</span></td><td class="td-obs"><span class="choice cc">C</span></td>
+  <td class="td-obs-sep"></td>
+  <td class="td-obs"><span class="choice ca">A</span></td><td class="td-obs"><span class="choice cb">B</span></td><td class="td-obs"><span class="choice cc">C</span></td>
+  <td class="td-profil">·</td><td class="td-lacune"></td><td class="td-notes"></td>
+</tr>
+<tr>
+  <td class="td-n">21</td><td class="td-nom-blank"></td>
+  <td class="td-obs"><span class="choice ca">A</span></td><td class="td-obs"><span class="choice cb">B</span></td><td class="td-obs"><span class="choice cc">C</span></td>
+  <td class="td-obs-sep"></td>
+  <td class="td-obs"><span class="choice ca">A</span></td><td class="td-obs"><span class="choice cb">B</span></td><td class="td-obs"><span class="choice cc">C</span></td>
+  <td class="td-obs-sep"></td>
+  <td class="td-obs"><span class="choice ca">A</span></td><td class="td-obs"><span class="choice cb">B</span></td><td class="td-obs"><span class="choice cc">C</span></td>
+  <td class="td-profil">·</td><td class="td-lacune"></td><td class="td-notes"></td>
+</tr>
+<tr>
+  <td class="td-n">22</td><td class="td-nom-blank"></td>
+  <td class="td-obs"><span class="choice ca">A</span></td><td class="td-obs"><span class="choice cb">B</span></td><td class="td-obs"><span class="choice cc">C</span></td>
+  <td class="td-obs-sep"></td>
+  <td class="td-obs"><span class="choice ca">A</span></td><td class="td-obs"><span class="choice cb">B</span></td><td class="td-obs"><span class="choice cc">C</span></td>
+  <td class="td-obs-sep"></td>
+  <td class="td-obs"><span class="choice ca">A</span></td><td class="td-obs"><span class="choice cb">B</span></td><td class="td-obs"><span class="choice cc">C</span></td>
+  <td class="td-profil">·</td><td class="td-lacune"></td><td class="td-notes"></td>
+</tr>
+<tr>
+  <td class="td-n">23</td><td class="td-nom-blank"></td>
+  <td class="td-obs"><span class="choice ca">A</span></td><td class="td-obs"><span class="choice cb">B</span></td><td class="td-obs"><span class="choice cc">C</span></td>
+  <td class="td-obs-sep"></td>
+  <td class="td-obs"><span class="choice ca">A</span></td><td class="td-obs"><span class="choice cb">B</span></td><td class="td-obs"><span class="choice cc">C</span></td>
+  <td class="td-obs-sep"></td>
+  <td class="td-obs"><span class="choice ca">A</span></td><td class="td-obs"><span class="choice cb">B</span></td><td class="td-obs"><span class="choice cc">C</span></td>
+  <td class="td-profil">·</td><td class="td-lacune"></td><td class="td-notes"></td>
+</tr>
+<tr>
+  <td class="td-n">24</td><td class="td-nom-blank"></td>
+  <td class="td-obs"><span class="choice ca">A</span></td><td class="td-obs"><span class="choice cb">B</span></td><td class="td-obs"><span class="choice cc">C</span></td>
+  <td class="td-obs-sep"></td>
+  <td class="td-obs"><span class="choice ca">A</span></td><td class="td-obs"><span class="choice cb">B</span></td><td class="td-obs"><span class="choice cc">C</span></td>
+  <td class="td-obs-sep"></td>
+  <td class="td-obs"><span class="choice ca">A</span></td><td class="td-obs"><span class="choice cb">B</span></td><td class="td-obs"><span class="choice cc">C</span></td>
+  <td class="td-profil">·</td><td class="td-lacune"></td><td class="td-notes"></td>
+</tr>
+
+<!-- ─── G5 ─── -->
+<tr class="gf">
+  <td class="td-gr" rowspan="6">G5</td>
+  <td class="td-n">25</td><td class="td-nom-blank"></td>
+  <td class="td-obs"><span class="choice ca">A</span></td><td class="td-obs"><span class="choice cb">B</span></td><td class="td-obs"><span class="choice cc">C</span></td>
+  <td class="td-obs-sep"></td>
+  <td class="td-obs"><span class="choice ca">A</span></td><td class="td-obs"><span class="choice cb">B</span></td><td class="td-obs"><span class="choice cc">C</span></td>
+  <td class="td-obs-sep"></td>
+  <td class="td-obs"><span class="choice ca">A</span></td><td class="td-obs"><span class="choice cb">B</span></td><td class="td-obs"><span class="choice cc">C</span></td>
+  <td class="td-profil">·</td><td class="td-lacune"></td><td class="td-notes"></td>
+</tr>
+<tr>
+  <td class="td-n">26</td><td class="td-nom-blank"></td>
+  <td class="td-obs"><span class="choice ca">A</span></td><td class="td-obs"><span class="choice cb">B</span></td><td class="td-obs"><span class="choice cc">C</span></td>
+  <td class="td-obs-sep"></td>
+  <td class="td-obs"><span class="choice ca">A</span></td><td class="td-obs"><span class="choice cb">B</span></td><td class="td-obs"><span class="choice cc">C</span></td>
+  <td class="td-obs-sep"></td>
+  <td class="td-obs"><span class="choice ca">A</span></td><td class="td-obs"><span class="choice cb">B</span></td><td class="td-obs"><span class="choice cc">C</span></td>
+  <td class="td-profil">·</td><td class="td-lacune"></td><td class="td-notes"></td>
+</tr>
+<tr>
+  <td class="td-n">27</td><td class="td-nom-blank"></td>
+  <td class="td-obs"><span class="choice ca">A</span></td><td class="td-obs"><span class="choice cb">B</span></td><td class="td-obs"><span class="choice cc">C</span></td>
+  <td class="td-obs-sep"></td>
+  <td class="td-obs"><span class="choice ca">A</span></td><td class="td-obs"><span class="choice cb">B</span></td><td class="td-obs"><span class="choice cc">C</span></td>
+  <td class="td-obs-sep"></td>
+  <td class="td-obs"><span class="choice ca">A</span></td><td class="td-obs"><span class="choice cb">B</span></td><td class="td-obs"><span class="choice cc">C</span></td>
+  <td class="td-profil">·</td><td class="td-lacune"></td><td class="td-notes"></td>
+</tr>
+<tr>
+  <td class="td-n">28</td><td class="td-nom-blank"></td>
+  <td class="td-obs"><span class="choice ca">A</span></td><td class="td-obs"><span class="choice cb">B</span></td><td class="td-obs"><span class="choice cc">C</span></td>
+  <td class="td-obs-sep"></td>
+  <td class="td-obs"><span class="choice ca">A</span></td><td class="td-obs"><span class="choice cb">B</span></td><td class="td-obs"><span class="choice cc">C</span></td>
+  <td class="td-obs-sep"></td>
+  <td class="td-obs"><span class="choice ca">A</span></td><td class="td-obs"><span class="choice cb">B</span></td><td class="td-obs"><span class="choice cc">C</span></td>
+  <td class="td-profil">·</td><td class="td-lacune"></td><td class="td-notes"></td>
+</tr>
+<tr>
+  <td class="td-n">29</td><td class="td-nom-blank"></td>
+  <td class="td-obs"><span class="choice ca">A</span></td><td class="td-obs"><span class="choice cb">B</span></td><td class="td-obs"><span class="choice cc">C</span></td>
+  <td class="td-obs-sep"></td>
+  <td class="td-obs"><span class="choice ca">A</span></td><td class="td-obs"><span class="choice cb">B</span></td><td class="td-obs"><span class="choice cc">C</span></td>
+  <td class="td-obs-sep"></td>
+  <td class="td-obs"><span class="choice ca">A</span></td><td class="td-obs"><span class="choice cb">B</span></td><td class="td-obs"><span class="choice cc">C</span></td>
+  <td class="td-profil">·</td><td class="td-lacune"></td><td class="td-notes"></td>
+</tr>
+<tr>
+  <td class="td-n">30</td><td class="td-nom-blank"></td>
+  <td class="td-obs"><span class="choice ca">A</span></td><td class="td-obs"><span class="choice cb">B</span></td><td class="td-obs"><span class="choice cc">C</span></td>
+  <td class="td-obs-sep"></td>
+  <td class="td-obs"><span class="choice ca">A</span></td><td class="td-obs"><span class="choice cb">B</span></td><td class="td-obs"><span class="choice cc">C</span></td>
+  <td class="td-obs-sep"></td>
+  <td class="td-obs"><span class="choice ca">A</span></td><td class="td-obs"><span class="choice cb">B</span></td><td class="td-obs"><span class="choice cc">C</span></td>
+  <td class="td-profil">·</td><td class="td-lacune"></td><td class="td-notes"></td>
+</tr>
+
+<!-- BILAN -->
+<tr class="bilan-row">
+  <td colspan="3" class="bilan-label">BILAN CLASSE — Nb par degré</td>
+  <td colspan="3" style="text-align:center;font-size:7pt;">A: __ &nbsp; B: __ &nbsp; C: __</td>
+  <td style="background:var(--bleu-fonce);width:3px;padding:0;border:none;"></td>
+  <td colspan="3" style="text-align:center;font-size:7pt;">A: __ &nbsp; B: __ &nbsp; C: __</td>
+  <td style="background:var(--bleu-fonce);width:3px;padding:0;border:none;"></td>
+  <td colspan="3" style="text-align:center;font-size:7pt;">A: __ &nbsp; B: __ &nbsp; C: __</td>
+  <td colspan="3" style="font-size:7pt;color:rgba(255,255,255,.6)">Profil dominant classe → orienter contenus S2</td>
+</tr>
+
+    </tbody>
+  </table>
+
+  <!-- ZONE FINALE -->
+  <div class="zone-finale">
+    <div class="zone-box">
+      <div class="zone-box-title">Conduites dominantes observées</div>
+      <div class="zone-line"></div>
+      <div class="zone-line"></div>
+    </div>
+    <div class="zone-box">
+      <div class="zone-box-title">Priorité S2 : OBS-___ &nbsp;·&nbsp; Signal écart stade : OUI ✓ (N1 chez lycée N2)</div>
+      <div class="zone-line"></div>
+      <div class="zone-line"></div>
+    </div>
+  </div>
+
+  <!-- PIED DE PAGE -->
+  <div class="footer">
+    <span>GRILLE VIERGE · DI-ACR · ACROSPORT · ADP 2026 · QUAL_EQ_05</span>
+    <span>Source : B.O. spécial n°5 du 19 juillet 2012 — DNB Acrosport</span>
+    <span>Formateur : BOUARGANE · CRMEF Souss-Massa — Section EPS</span>
+  </div>
+
+</div><!-- /page -->
+</body>
+</html>
