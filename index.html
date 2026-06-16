@@ -510,6 +510,22 @@ input[type="range"] {
 }
 
 
+/* ── Filtre groupe ── */
+.groupe-filter-btn {
+  background: var(--gris-fond);
+  color: var(--texte-doux);
+  border: 1.5px solid var(--gris-bord);
+  padding: 3px 12px;
+  border-radius: 20px;
+  font-size: .76rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all .15s;
+}
+.groupe-filter-btn:hover { border-color: var(--bleu); color: var(--bleu); }
+.groupe-filter-btn.active-filter { background: var(--bleu); color: white; border-color: var(--bleu); }
+.eleve-row.hidden-group { display: none !important; }
+
 /* ── Toast notification ── */
 #toast {
   position: fixed;
@@ -622,6 +638,16 @@ input[type="range"] {
       Saisie manuelle des élèves
     </div>
 
+    <div id="groupe-filter" style="display:none;gap:6px;align-items:center;flex-wrap:wrap;margin-bottom:10px;">
+      <span style="font-size:.76rem;font-weight:600;color:var(--texte-doux);">Afficher :</span>
+      <button class="btn btn-small groupe-filter-btn active-filter" onclick="filtrerGroupe('all')" id="fg-all">Tous</button>
+      <button class="btn btn-small groupe-filter-btn" onclick="filtrerGroupe('G1')" id="fg-G1">G1</button>
+      <button class="btn btn-small groupe-filter-btn" onclick="filtrerGroupe('G2')" id="fg-G2">G2</button>
+      <button class="btn btn-small groupe-filter-btn" onclick="filtrerGroupe('G3')" id="fg-G3">G3</button>
+      <button class="btn btn-small groupe-filter-btn" onclick="filtrerGroupe('G4')" id="fg-G4">G4</button>
+      <button class="btn btn-small groupe-filter-btn" onclick="filtrerGroupe('G5')" id="fg-G5">G5</button>
+    </div>
+
     <div id="eleves-container"></div>
 
     <div style="display:flex;gap:10px;margin-top:12px;flex-wrap:wrap;">
@@ -650,6 +676,7 @@ input[type="range"] {
   <div class="toolbar">
     <button class="btn btn-primary" onclick="analyser()">📊 Analyser la classe</button>
     <button class="btn btn-secondary" onclick="exportCSV()">⬇ Export CSV</button>
+    <button class="btn btn-secondary" onclick="exportPDFBilan()">📄 Bilan PDF</button>
     <button class="btn btn-secondary" onclick="window.print()">🖨 Imprimer</button>
   </div>
 
@@ -755,6 +782,7 @@ input[type="range"] {
   <div class="toolbar">
     <button class="btn btn-secondary" onclick="goStep(3)">‹ Retour Étape 3</button>
     <button class="btn btn-secondary" onclick="exportCSV()">⬇ Export CSV</button>
+    <button class="btn btn-secondary" onclick="exportPDFBilan()">📄 Bilan PDF</button>
     <button class="btn btn-secondary" onclick="window.print()">🖨 Imprimer</button>
   </div>
 
@@ -1129,11 +1157,48 @@ function parseCSV(text) {
     }
 
     addEleve(prenom, obs);
+    var newId = elevesList.length - 1;
+    eleveGroupMap[newId] = "G" + Math.min(Math.floor(importes / 6) + 1, 5);
     importes++;
   }
 
-  feedback.innerHTML = "<span class='feedback-ok'>✅ " + importes + " élève(s) importé(s).</span>" +
-    (ignores > 0 ? " <span class='feedback-warn'>⚠ " + ignores + " ligne(s) ignorée(s).</span>" : "");
+  if (importes > 0) {
+    var fg = document.getElementById("groupe-filter");
+    if (fg) fg.style.display = "flex";
+  }
+
+  // Rapport validation détaillé (A9)
+  var rapportHtml = "<span class='feedback-ok'>✅ " + importes + " élève(s) importé(s).</span>";
+  if (ignores > 0) {
+    rapportHtml += " <span class='feedback-warn'>⚠ " + ignores + " ligne(s) ignorée(s).</span>";
+    var vraisErreurs = raisonIgn.filter(function(r) { return r.indexOf("vide") === -1; });
+    if (vraisErreurs.length > 0) {
+      rapportHtml += "<details style='margin-top:6px;font-size:.78rem;'>" +
+        "<summary style='cursor:pointer;color:var(--amber);font-weight:600'>🔍 Détail des lignes ignorées (" + vraisErreurs.length + ")</summary>" +
+        "<div style='background:#FDF3E3;border:1px solid #E8C88A;border-radius:6px;padding:8px 12px;margin-top:4px;'>" +
+        "<table style='width:100%;border-collapse:collapse;font-size:.75rem;'>" +
+        "<tr><th style='text-align:left;padding:3px 6px;color:var(--amber)'>Ligne</th>" +
+        "<th style='text-align:left;padding:3px 6px;color:var(--amber)'>Raison</th>" +
+        "<th style='text-align:left;padding:3px 6px;color:var(--amber)'>Correction</th></tr>" +
+        vraisErreurs.map(function(r) {
+          var corr = r.indexOf("colonnes observables") !== -1
+            ? "Codes attendus : CD/EA/JF \u00b7 IE/CP/OP \u00b7 FC/FI/FS"
+            : "Format : Prenom,OBS-01,OBS-02,OBS-03";
+          return "<tr style='border-top:1px solid #E8C88A'>" +
+            "<td style='padding:3px 6px;color:var(--terra);font-weight:600'>" + r.split(":")[0] + "</td>" +
+            "<td style='padding:3px 6px'>" + r.split(":").slice(1).join(":").trim() + "</td>" +
+            "<td style='padding:3px 6px;color:var(--gris);font-style:italic'>" + corr + "</td></tr>";
+        }).join("") +
+        "</table></div></details>";
+    }
+  }
+  if (importes === 0) {
+    rapportHtml += "<div style='margin-top:8px;padding:8px 12px;background:#FDEAEA;border:1px solid #E8B4B4;border-radius:6px;font-size:.78rem;'>" +
+      "<strong style='color:var(--terra)'>💡 Format CSV attendu :</strong><br>" +
+      "<code style='background:#fff;padding:2px 6px;border-radius:3px'>Prenom,OBS-01,OBS-02,OBS-03</code><br>" +
+      "<code style='background:#fff;padding:2px 6px;border-radius:3px'>Yassine,JF,OP,FS</code></div>";
+  }
+  feedback.innerHTML = rapportHtml;
 }
 
 /* ═══════════════════════════════════════════════════════
@@ -1779,6 +1844,116 @@ function resetSession() {
 window.addEventListener("load", function() {
   restoreSession();
 });
+
+/* ══════════ A8 — FILTRE GROUPE ══════════ */
+var eleveGroupMap = {};
+function filtrerGroupe(gr) {
+  document.querySelectorAll(".groupe-filter-btn").forEach(function(b) {
+    b.classList.remove("active-filter");
+  });
+  var btn = document.getElementById("fg-" + (gr === "all" ? "all" : gr));
+  if (btn) btn.classList.add("active-filter");
+  document.querySelectorAll(".eleve-row").forEach(function(row) {
+    var id = parseInt(row.id.replace("eleve-row-", ""));
+    var grp = eleveGroupMap[id];
+    if (gr === "all" || !grp || grp === gr) row.classList.remove("hidden-group");
+    else row.classList.add("hidden-group");
+  });
+}
+
+/* ══════════ A7 — BILAN PDF ══════════ */
+function exportPDFBilan() {
+  if (!lastResults || lastResults.length === 0) {
+    alert("Analysez d\u2019abord la classe (bouton \u00ab\u00a0Analyser la classe\u00a0\u00bb).");
+    return;
+  }
+  var n = lastResults.length;
+  var nA = lastResults.filter(function(r) { return r.profilGlobal === "A"; }).length;
+  var nB = lastResults.filter(function(r) { return r.profilGlobal === "B"; }).length;
+  var nC = lastResults.filter(function(r) { return r.profilGlobal === "C"; }).length;
+  var moy = Math.round(lastResults.reduce(function(s, r) { return s + r.moy; }, 0) / n * 100) / 100;
+  var dateStr = new Date().toLocaleDateString("fr-FR");
+
+  function getCode(val, oi) {
+    var m = [["CD","EA","JF"],["IE","CP","OP"],["FC","FI","FS"]];
+    return val >= 7.5 ? m[oi][0] : val >= 4.5 ? m[oi][1] : m[oi][2];
+  }
+
+  var obsNoms = ["OBS-01 \u2014 Encha\u00eenement collectif","OBS-02 \u2014 Interpr\u00e9tation individuelle","OBS-03 \u2014 Niveau de difficult\u00e9"];
+
+  var html = "<!DOCTYPE html><html lang='fr'><head><meta charset='UTF-8'>" +
+    "<title>Bilan Classe DI-ACR \u00b7 ADP 2026</title><style>" +
+    "body{font-family:Arial,sans-serif;font-size:10pt;color:#0f1117;margin:0;}" +
+    ".page{padding:10mm 12mm;}" +
+    "h1{font-size:13pt;color:#1a4f8a;border-bottom:2.5px solid #1a4f8a;padding-bottom:5px;margin-bottom:4px;}" +
+    ".sub{font-size:7.5pt;color:#5a5f70;margin-bottom:9px;}" +
+    ".cards{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:10px;}" +
+    ".card{border-radius:6px;padding:8px;text-align:center;background:#f4f5f8;}" +
+    ".num{font-size:20pt;font-weight:800;}.lbl{font-size:7pt;color:#5a5f70;line-height:1.4;}" +
+    ".ca{background:#FDEAEA;}.ca .num{color:#8B1A1A;}" +
+    ".cb{background:#FDF3E3;}.cb .num{color:#7A4D00;}" +
+    ".cc{background:#E6F4EC;}.cc .num{color:#1A6B3A;}" +
+    ".bw{background:#d0d4de;height:8px;border-radius:4px;flex:1;}" +
+    ".bb{height:8px;border-radius:4px;}" +
+    "table{width:100%;border-collapse:collapse;font-size:8pt;margin-top:8px;}" +
+    "thead tr{background:#1a4f8a;color:#fff;}" +
+    "th{padding:5px 6px;text-align:left;font-size:7.5pt;}" +
+    "td{padding:4px 6px;border-bottom:1px solid #d0d4de;}" +
+    "tr.ra{background:#FDEAEA;}tr.rb{background:#FDF3E3;}tr.rc{background:#E6F4EC;}" +
+    ".footer{border-top:1px solid #d0d4de;padding-top:5px;font-size:6.5pt;color:#5a5f70;" +
+    "display:flex;justify-content:space-between;margin-top:10px;}" +
+    "@media print{@page{size:A4 portrait;margin:0;}}" +
+    "</style></head><body><div class='page'>" +
+    "<h1>BILAN CLASSE \u2014 ACROSPORT \u00b7 DI-ACR \u00b7 ADP 2026</h1>" +
+    "<div class='sub'>QUAL_EQ_05 \u00b7 CRMEF Souss-Massa \u00b7 Formateur\u00a0: BOUARGANE \u00b7 G\u00e9n\u00e9r\u00e9 le " + dateStr + "</div>" +
+    "<div class='cards'>" +
+    "<div class='card'><div class='num'>" + n + "</div><div class='lbl'>\u00c9l\u00e8ves analys\u00e9s</div></div>" +
+    "<div class='card ca'><div class='num'>" + nA + "</div><div class='lbl'>Profil A \u2014 Avanc\u00e9<br>" + Math.round(nA/n*100) + "%</div></div>" +
+    "<div class='card cb'><div class='num'>" + nB + "</div><div class='lbl'>Profil B \u2014 Interm.<br>" + Math.round(nB/n*100) + "%</div></div>" +
+    "<div class='card cc'><div class='num'>" + nC + "</div><div class='lbl'>Profil C \u2014 D\u00e9butant<br>" + Math.round(nC/n*100) + "%</div></div>" +
+    "<div class='card'><div class='num'>" + moy + "</div><div class='lbl'>Moy. /10<br>" + (moy*2).toFixed(1) + "/20</div></div>" +
+    "</div>" +
+    "<h3 style='font-size:9pt;color:#1a4f8a;margin:8px 0 5px'>Analyse par observable</h3>" +
+    [0,1,2].map(function(oi) {
+      var mo = Math.round(lastResults.reduce(function(s,r){return s+r.obs[oi];},0)/n*100)/100;
+      var col = mo>=7.5?"#1a6b3a":mo>=4.5?"#7a4d00":"#8b1a1a";
+      return "<div style='display:flex;align-items:center;gap:10px;margin-bottom:5px;font-size:8pt;'>" +
+        "<span style='min-width:180px'>" + obsNoms[oi] + "</span>" +
+        "<div class='bw'><div class='bb' style='width:" + (mo/10*100).toFixed(0) + "%;background:" + col + "'></div></div>" +
+        "<span style='min-width:55px;font-weight:700;color:" + col + "'>" + mo + "/10</span>" +
+        "<span style='font-size:7pt;color:#5a5f70'>" + getCode(mo,oi) + "</span></div>";
+    }).join("") +
+    "<h3 style='font-size:9pt;color:#1a4f8a;margin:10px 0 5px'>Tableau individuel</h3>" +
+    "<table><thead><tr><th>#</th><th>Pr\u00e9nom</th>" +
+    "<th>OBS-01</th><th>OBS-02</th><th>OBS-03</th>" +
+    "<th>Moy</th><th>/20</th><th>Profil</th><th>Lacune</th></tr></thead><tbody>" +
+    lastResults.map(function(r) {
+      var cls = r.profilGlobal==="A"?"ra":r.profilGlobal==="B"?"rb":"rc";
+      var lac = r.lacunes&&r.lacunes.length>0 ? "L1 \u2014 "+OBS_COURT[r.lacunes[0].idx] : "Aucune";
+      return "<tr class='" + cls + "'>" +
+        "<td>" + r.rang + "</td><td><b>" + r.prenom + "</b></td>" +
+        "<td style='text-align:center'>" + getCode(r.obs[0],0) + "</td>" +
+        "<td style='text-align:center'>" + getCode(r.obs[1],1) + "</td>" +
+        "<td style='text-align:center'>" + getCode(r.obs[2],2) + "</td>" +
+        "<td style='text-align:center;font-weight:700'>" + r.moy + "</td>" +
+        "<td style='text-align:center'>" + r.note20 + "</td>" +
+        "<td style='text-align:center;font-weight:700'>" + r.profilGlobal + "</td>" +
+        "<td style='font-size:7.5pt'>" + lac + "</td></tr>";
+    }).join("") +
+    "</tbody></table>" +
+    "<div class='footer'>" +
+    "<span>BILAN DI-ACR \u00b7 ADP 2026 \u00b7 QUAL_EQ_05</span>" +
+    "<span>B.O. sp\u00e9cial n\u00b05 du 19 juillet 2012 \u2014 DNB Acrosport</span>" +
+    "<span>Formateur\u00a0: BOUARGANE \u00b7 CRMEF Souss-Massa</span>" +
+    "</div></div>" +
+    "<script>window.onload=function(){window.print();}<\/script>" +
+    "</body></html>";
+
+  var w = window.open("", "_blank");
+  if (!w) { alert("Autorisez les popups pour ce site puis r\u00e9essayez."); return; }
+  w.document.write(html);
+  w.document.close();
+}
 
 </script>
 </body>
